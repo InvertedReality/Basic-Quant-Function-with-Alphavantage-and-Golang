@@ -10,7 +10,9 @@ func main() {
 	mux := http.NewServeMux()
 
 	//The urls
-	mux.HandleFunc("/get/", getdata)
+	mux.HandleFunc("/get/data/", getdata)
+	mux.HandleFunc("/get/meta/", GetMetaData)
+	mux.HandleFunc("/", Home)
 
 	//Server details
 	server := &http.Server{
