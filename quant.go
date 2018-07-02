@@ -251,7 +251,7 @@ func getgraph(writer http.ResponseWriter, request *http.Request) {
 					fmt.Println("errors")
 				}
 				x_vs_y[key] = y_values
-				graph_data["ordinates"] = x_vs_y
+				graph_data["co_ordinates"] = x_vs_y
 			}
 
 			//calculate the averages and append to our map
