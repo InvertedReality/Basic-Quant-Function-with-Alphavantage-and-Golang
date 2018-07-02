@@ -12,6 +12,7 @@ func main() {
 	//The urls
 	mux.HandleFunc("/get/data/", getdata)
 	mux.HandleFunc("/get/meta/", GetMetaData)
+	mux.HandleFunc("/get/graph/", getgraph)
 	mux.HandleFunc("/", Home)
 
 	//Server details
