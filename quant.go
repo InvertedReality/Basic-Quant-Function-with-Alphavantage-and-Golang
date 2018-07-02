@@ -257,6 +257,7 @@ func getgraph(writer http.ResponseWriter, request *http.Request) {
 				x_vs_y[key] = y_values
 				graph_data["co_ordinates"] = x_vs_y
 			}
+			//Calculate the standard deviation a.k.a gradient
 
 			//calculate the averages and append to our map
 			average_data["average_volume"] = average(volume_float)
@@ -272,7 +273,7 @@ func getgraph(writer http.ResponseWriter, request *http.Request) {
 			encoder := json.NewEncoder(writer)
 			encoder.SetIndent(empty, tab)
 			encoder.Encode(graph_data)
-			fmt.Println("/get/meta", http.StatusOK)
+			fmt.Println("/get/graph", http.StatusOK)
 		}
 	}
 
