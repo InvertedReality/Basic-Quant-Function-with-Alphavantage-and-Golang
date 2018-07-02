@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	p("Basic QUANT APP", version(), "started at", config.Address)
+	p("Basic QUANT APP", version(), "started at Adress:", config.Address, "\n", time.Now())
 	mux := http.NewServeMux()
 
 	//The urls
