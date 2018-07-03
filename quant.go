@@ -243,7 +243,7 @@ func getgraph(writer http.ResponseWriter, request *http.Request) {
 						parsed_value, err := strconv.ParseFloat(volume, 64)
 						if err == nil {
 							volume_float = append(volume_float, parsed_value)
-							volume_map["open"] = parsed_value
+							volume_map["volume"] = parsed_value
 							y_values = append(y_values, volume_map)
 						}
 					}
