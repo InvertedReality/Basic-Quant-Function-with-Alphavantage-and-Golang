@@ -101,6 +101,9 @@ func Home(writer http.ResponseWriter, request *http.Request) {
 		1: "/get/data",
 		2: "/get/meta",
 		3: "/get/graph",
+		4: "/logout",
+		5: "/signup",
+		6: "/authenticate",
 	}
 
 	{

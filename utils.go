@@ -1,10 +1,14 @@
 package main
 
 import (
+	"./models"
 	"encoding/json"
 	"fmt"
+	"log"
 	"os"
 )
+
+var logger *log.Logger
 
 type Configuration struct {
 	Address      string
@@ -16,7 +20,9 @@ type Configuration struct {
 var config Configuration
 
 func init() {
+	models.Dbinit()
 	loadConfig()
+
 }
 
 func loadConfig() {
@@ -37,4 +43,8 @@ func p(a ...interface{}) {
 
 func version() string {
 	return "0.1"
+}
+func danger(args ...interface{}) {
+	logger.SetPrefix("ERROR ")
+	logger.Println(args...)
 }

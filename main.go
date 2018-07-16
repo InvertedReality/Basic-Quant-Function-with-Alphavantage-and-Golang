@@ -13,6 +13,9 @@ func main() {
 	mux.HandleFunc("/get/data/", getdata)
 	mux.HandleFunc("/get/meta/", GetMetaData)
 	mux.HandleFunc("/get/graph/", getgraph)
+	mux.HandleFunc("/logout/", logout)
+	mux.HandleFunc("/signup/", signupAccount)
+	mux.HandleFunc("/authenticate/", authenticate)
 	mux.HandleFunc("/", Home)
 
 	//Server details
