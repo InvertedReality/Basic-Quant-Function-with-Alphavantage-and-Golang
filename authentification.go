@@ -48,45 +48,24 @@ func signupAccount(writer http.ResponseWriter, request *http.Request) {
 
 // POST /authenticate
 // Authenticate the user given the email and password
-
-type Login struct {
-	email    string
-	password string
-}
-
-func (f Login) Email() string {
-	return f.email
-}
-func (f Login) Password() string {
-	return f.password
-}
-
-// POST /authenticate
-// Authenticate the user given the email and password
 func authenticate(writer http.ResponseWriter, request *http.Request) {
-	login := Login{}
+	login_details := make(map[string]string)
 	body, err := ioutil.ReadAll(io.LimitReader(request.Body, 1048576))
 	if err != nil {
-		writer.Header().Set("Content-Type", "application/json")
-		writer.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(writer).Encode("data limit exceeded")
-	}
-	request.Body.Close()
-	if err := json.Unmarshal(body, &login); err != nil {
-		writer.Header().Set("Content-Type", "application/json")
-		writer.WriteHeader(http.StatusBadRequest)
-		// json.NewEncoder(writer).Encode("Invalid json data")
 		fmt.Println("/authenticate", http.StatusBadRequest, err)
 	}
-
-	user, err := models.UserByEmail(login.Email())
+	request.Body.Close()
+	if err := json.Unmarshal(body, &login_details); err != nil {
+		fmt.Println("/authenticate", http.StatusBadRequest, err)
+	}
+	user, err := models.UserByEmail(login_details["email"])
 	if err != nil {
 		writer.Header().Set("Content-Type", "application/json")
 		writer.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(writer).Encode("Couldn't find user")
 		fmt.Println("/authenticate", http.StatusBadRequest, err)
 	}
-	if user.Password == models.Encrypt(login.Email()) {
+	if user.Password == models.Encrypt(login_details["password"]) {
 		session, err := user.CreateSession()
 		if err != nil {
 			writer.Header().Set("Content-Type", "application/json")
@@ -94,7 +73,7 @@ func authenticate(writer http.ResponseWriter, request *http.Request) {
 			fmt.Println("/authenticate", http.StatusBadRequest, err)
 			json.NewEncoder(writer).Encode("Error creating session")
 		} else {
-			expiration := time.Now().Add(365 * 24 * time.Hour)
+			expiration := time.Now().Add(time.Hour)
 			cookie := http.Cookie{
 				Name:     "_cookie",
 				Value:    session.Uuid,
@@ -108,6 +87,12 @@ func authenticate(writer http.ResponseWriter, request *http.Request) {
 			json.NewEncoder(writer).Encode(cookie)
 			fmt.Println("/authenticate", http.StatusOK)
 		}
+
+	} else {
+		writer.Header().Set("Content-Type", "application/json")
+		writer.WriteHeader(http.StatusBadRequest)
+		fmt.Println("/authenticate", http.StatusBadRequest, err)
+		json.NewEncoder(writer).Encode("Error verifying password")
 	}
 
 }

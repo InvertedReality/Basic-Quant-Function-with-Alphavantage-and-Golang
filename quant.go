@@ -55,6 +55,7 @@ func getdata(writer http.ResponseWriter, request *http.Request) {
 	}
 	response.Body.Close()
 	json.Unmarshal(responsedata, &auto)
+	fmt.Println(auto)
 	times, err := auto.TimeSeries1()
 	//Get the keys of the latest time series data in a sorted fashion
 	if err != nil {
