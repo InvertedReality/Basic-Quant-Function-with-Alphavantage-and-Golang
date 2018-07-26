@@ -17,6 +17,7 @@ func main() {
 	mux.HandleFunc("/signup/", signupAccount)
 	mux.HandleFunc("/authenticate/", authenticate)
 	mux.HandleFunc("/", Home)
+	mux.HandleFunc("/list/users/",Userlist)
 
 	//Server details
 	server := &http.Server{

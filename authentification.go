@@ -109,3 +109,25 @@ func logout(writer http.ResponseWriter, request *http.Request) {
 		session.DeleteByUUID()
 	}
 }
+
+//GET /list/users
+
+
+func Userlist(writer http.ResponseWriter, request *http.Request) {
+	users,err:=models.Users()
+	if err != nil {
+		{
+			writer.Header().Set("Content-Type", "application/json")
+			writer.WriteHeader(http.StatusInternalServerError)
+			fmt.Println(http.StatusInternalServerError)
+			fmt.Println(err)
+		}
+	} else {
+		writer.Header().Set("Content-Type", "application/json")
+		writer.WriteHeader(http.StatusOK)
+		encoder := json.NewEncoder(writer)
+		encoder.SetIndent(empty, tab)
+		encoder.Encode(users)
+		fmt.Println("/list/users", http.StatusOK)
+	}
+}

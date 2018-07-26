@@ -105,6 +105,7 @@ func Home(writer http.ResponseWriter, request *http.Request) {
 		4: "/logout",
 		5: "/signup",
 		6: "/authenticate",
+		7: "/list/users",
 	}
 
 	{

@@ -13,7 +13,7 @@ var Db *sql.DB
 
 func Dbinit() {
 	var err error
-	Db, err = sql.Open("postgres", "user=postgres password=postgres dbname=quant")
+	Db, err = sql.Open("postgres", "user=first password=first dbname=first")
 	if err != nil {
 		fmt.Println(err)
 	}
