@@ -131,3 +131,30 @@ func Userlist(writer http.ResponseWriter, request *http.Request) {
 		fmt.Println("/list/users", http.StatusOK)
 	}
 }
+
+func UserDelete(writer http.ResponseWriter, request *http.Request) {
+	user_email := make(map[string]string)
+
+	body, err := ioutil.ReadAll(io.LimitReader(request.Body, 1048576))
+
+	if err != nil {
+		fmt.Println("/delete/user", http.StatusBadRequest, err)
+	}
+	request.Body.Close()
+	if err := json.Unmarshal(body, &user_email); err != nil {
+		fmt.Println("/delete/user", http.StatusBadRequest, err)
+	}else{
+		user, err := models.UserByEmail(user_email["email"])
+		if err != nil {
+			writer.Header().Set("Content-Type", "application/json")
+			writer.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(writer).Encode("Couldn't find user")
+			fmt.Println("/delete/user", http.StatusBadRequest, err)
+		}else{
+			user.Delete()
+			writer.Header().Set("Content-Type", "application/json")
+			writer.WriteHeader(http.StatusOK)
+			fmt.Println("/delete/user", http.StatusOK)
+		}
+	}
+}

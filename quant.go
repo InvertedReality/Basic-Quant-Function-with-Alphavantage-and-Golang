@@ -106,6 +106,7 @@ func Home(writer http.ResponseWriter, request *http.Request) {
 		5: "/signup",
 		6: "/authenticate",
 		7: "/list/users",
+		8: "/delete/user",
 	}
 
 	{
@@ -138,8 +139,6 @@ func GetMetaData(writer http.ResponseWriter, request *http.Request) {
 		{
 			writer.Header().Set("Content-Type", "application/json")
 			writer.WriteHeader(http.StatusInternalServerError)
-			encoder := json.NewEncoder(writer)
-			encoder.SetIndent(empty, tab)
 			fmt.Println(http.StatusInternalServerError)
 			fmt.Println(err)
 		}
