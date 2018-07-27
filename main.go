@@ -3,6 +3,7 @@ package main
 import (
 	"net/http"
 	"time"
+	"encoding/json"
 )
 
 func main() {
@@ -17,8 +18,8 @@ func main() {
 	mux.HandleFunc("/signup/", signupAccount)
 	mux.HandleFunc("/authenticate/", authenticate)
 	mux.HandleFunc("/", Home)
-	mux.HandleFunc("/list/users/",Userlist)
-	mux.HandleFunc("/delete/user/",UserDelete)
+	mux.HandleFunc("/user/list/",UserExec)
+	mux.HandleFunc("/user/delete/",UserExec)
 
 	//Server details
 	server := &http.Server{
@@ -29,4 +30,29 @@ func main() {
 		MaxHeaderBytes: 1 << 20,
 	}
 	server.ListenAndServe()
+}
+
+//home
+//lists urls
+func Home(writer http.ResponseWriter, request *http.Request) {
+	urls := map[int]string{
+		1: "/get/data",
+		2: "/get/meta",
+		3: "/get/graph",
+		4: "/logout",
+		5: "/signup",
+		6: "/authenticate",
+		7: "/user/list/",
+		8: "/user/delete/",
+	}
+
+	{
+		writer.Header().Set("Content-Type", "application/json")
+		writer.WriteHeader(http.StatusOK)
+		encoder := json.NewEncoder(writer)
+		encoder.SetIndent(empty, tab)
+		encoder.Encode(urls)
+
+	}
+
 }

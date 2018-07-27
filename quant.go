@@ -95,31 +95,6 @@ func getdata(writer http.ResponseWriter, request *http.Request) {
 	}
 }
 
-//home
-//lists urls
-func Home(writer http.ResponseWriter, request *http.Request) {
-	urls := map[int]string{
-		1: "/get/data",
-		2: "/get/meta",
-		3: "/get/graph",
-		4: "/logout",
-		5: "/signup",
-		6: "/authenticate",
-		7: "/list/users",
-		8: "/delete/user",
-	}
-
-	{
-		writer.Header().Set("Content-Type", "application/json")
-		writer.WriteHeader(http.StatusOK)
-		encoder := json.NewEncoder(writer)
-		encoder.SetIndent(empty, tab)
-		encoder.Encode(urls)
-
-	}
-
-}
-
 //get meta data
 //get/meta/
 func GetMetaData(writer http.ResponseWriter, request *http.Request) {
