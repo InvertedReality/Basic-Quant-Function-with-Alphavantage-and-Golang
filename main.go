@@ -13,13 +13,13 @@ func main() {
 	mux := http.NewServeMux()
 
 	//The urls
+	mux.HandleFunc("/", Home)
 	mux.HandleFunc("/get/data/", getdata)
 	mux.HandleFunc("/get/meta/", GetMetaData)
 	mux.HandleFunc("/get/graph/", getgraph)
 	mux.HandleFunc("/user/logout/", authenticate)
-	mux.HandleFunc("/user/signup/",UserExec)
 	mux.HandleFunc("/user/auth/", authenticate)
-	mux.HandleFunc("/", Home)
+	mux.HandleFunc("/user/signup/",UserExec)
 	mux.HandleFunc("/user/list/",UserExec)
 	mux.HandleFunc("/user/delete/",UserExec)
 
