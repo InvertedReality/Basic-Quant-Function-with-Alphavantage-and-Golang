@@ -23,25 +23,25 @@ func authenticate(writer http.ResponseWriter, request *http.Request) {
 			login_details := make(map[string]string)
 			body, err := ioutil.ReadAll(io.LimitReader(request.Body, 1048576))
 			if err != nil {
-				fmt.Println("/authenticate", http.StatusBadRequest, err)
+				fmt.Println("/user/auth/", http.StatusBadRequest, err)
 			}
 			request.Body.Close()
 			if err := json.Unmarshal(body, &login_details); err != nil {
-				fmt.Println("/authenticate", http.StatusBadRequest, err)
+				fmt.Println("/user/auth/", http.StatusBadRequest, err)
 			}
 			user, err := models.UserByEmail(login_details["email"])
 			if err != nil {
 				writer.Header().Set("Content-Type", "application/json")
 				writer.WriteHeader(http.StatusBadRequest)
 				json.NewEncoder(writer).Encode("Couldn't find user")
-				fmt.Println("/authenticate", http.StatusBadRequest, err)
+				fmt.Println("/user/auth/", http.StatusBadRequest, err)
 			}
 			if user.Password == models.Encrypt(login_details["password"]) {
 				session, err := user.CreateSession()
 				if err != nil {
 					writer.Header().Set("Content-Type", "application/json")
 					writer.WriteHeader(http.StatusBadRequest)
-					fmt.Println("/authenticate", http.StatusBadRequest, err)
+					fmt.Println("/user/auth/", http.StatusBadRequest, err)
 					json.NewEncoder(writer).Encode("Error creating session")
 				} else {
 					expiration := time.Now().Add(time.Hour)
@@ -56,13 +56,13 @@ func authenticate(writer http.ResponseWriter, request *http.Request) {
 					writer.Header().Set("Content-Type", "application/json")
 					writer.WriteHeader(http.StatusOK)
 					json.NewEncoder(writer).Encode(cookie)
-					fmt.Println("/authenticate", http.StatusOK)
+					fmt.Println("/user/auth/", http.StatusOK)
 				}
 
 			} else {
 				writer.Header().Set("Content-Type", "application/json")
 				writer.WriteHeader(http.StatusBadRequest)
-				fmt.Println("/authenticate", http.StatusBadRequest, err)
+				fmt.Println("/user/auth/", http.StatusBadRequest, err)
 				json.NewEncoder(writer).Encode("Error verifying password")
 			}
 
@@ -102,7 +102,7 @@ func UserExec(writer http.ResponseWriter, request *http.Request){
 				encoder := json.NewEncoder(writer)
 				encoder.SetIndent(empty, tab)
 				encoder.Encode(users)
-				fmt.Println("/list/users", http.StatusOK)
+				fmt.Println("/user/list/", http.StatusOK)
 			}
 		}
 	case request.Method=="POST" && request.URL.Path=="/user/delete/" :
@@ -112,23 +112,23 @@ func UserExec(writer http.ResponseWriter, request *http.Request){
 			body, err := ioutil.ReadAll(io.LimitReader(request.Body, 1048576))
 
 			if err != nil {
-				fmt.Println("/delete/user", http.StatusBadRequest, err)
+				fmt.Println("/user/delete/", http.StatusBadRequest, err)
 			}
 			request.Body.Close()
 			if err := json.Unmarshal(body, &user_email); err != nil {
-				fmt.Println("/delete/user", http.StatusBadRequest, err)
+				fmt.Println("/user/delete/", http.StatusBadRequest, err)
 			}else{
 				user, err := models.UserByEmail(user_email["email"])
 				if err != nil {
 					writer.Header().Set("Content-Type", "application/json")
 					writer.WriteHeader(http.StatusBadRequest)
 					json.NewEncoder(writer).Encode("Couldn't find user")
-					fmt.Println("/delete/user", http.StatusBadRequest, err)
+					fmt.Println("/user/delete/", http.StatusBadRequest, err)
 				}else{
 					user.Delete()
 					writer.Header().Set("Content-Type", "application/json")
 					writer.WriteHeader(http.StatusOK)
-					fmt.Println("/delete/user", http.StatusOK)
+					fmt.Println("/user/delete/", http.StatusOK)
 				}
 			}
 		}
@@ -139,28 +139,28 @@ func UserExec(writer http.ResponseWriter, request *http.Request){
 			if err != nil {
 				writer.Header().Set("Content-Type", "application/json")
 				writer.WriteHeader(http.StatusBadRequest)
-				fmt.Println("/signup", http.StatusBadRequest, err)
+				fmt.Println("/user/signup/", http.StatusBadRequest, err)
 				json.NewEncoder(writer).Encode("data limit exceeded")
 			}
 			request.Body.Close()
 			if err := json.Unmarshal(body, &user); err != nil {
 				writer.Header().Set("Content-Type", "application/json")
 				writer.WriteHeader(http.StatusBadRequest)
-				fmt.Println("/signup", http.StatusBadRequest, err)
+				fmt.Println("/user/signup/", http.StatusBadRequest, err)
 				json.NewEncoder(writer).Encode("Invalid json data")
 
 			}
 			if err := user.Create(); err != nil {
 				writer.Header().Set("Content-Type", "application/json")
 				writer.WriteHeader(http.StatusBadRequest)
-				fmt.Println("/signup", http.StatusBadRequest, err)
+				fmt.Println("/user/signup/", http.StatusBadRequest, err)
 				json.NewEncoder(writer).Encode("Couldn't create user")
-				// fmt.Println("/signup", err)
+				
 			} else {
 				writer.Header().Set("Content-Type", "application/json")
 				writer.WriteHeader(http.StatusCreated)
 				json.NewEncoder(writer).Encode(successmessage)
-				fmt.Println("/signup", http.StatusCreated)
+				fmt.Println("/user/signup/", http.StatusCreated)
 			}
 		}
 	}
