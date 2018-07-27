@@ -46,6 +46,10 @@ func signupAccount(writer http.ResponseWriter, request *http.Request) {
 	}
 }
 
+
+// GET /logout
+// Logs the user out
+
 // POST /authenticate
 // Authenticate the user given the email and password
 func authenticate(writer http.ResponseWriter, request *http.Request) {
@@ -97,6 +101,63 @@ func authenticate(writer http.ResponseWriter, request *http.Request) {
 
 }
 
+
+//GET /list/users
+//POST /user/delete/
+func UserExec(writer http.ResponseWriter, request *http.Request){
+
+	switch{
+	case request.Method=="GET" && request.URL.Path=="/user/list/" :
+		 {
+			users,err:=models.Users()
+			if err != nil {
+				{
+					writer.Header().Set("Content-Type", "application/json")
+					writer.WriteHeader(http.StatusInternalServerError)
+					fmt.Println(http.StatusInternalServerError)
+					fmt.Println(err)
+				}
+			} else {
+				writer.Header().Set("Content-Type", "application/json")
+				writer.WriteHeader(http.StatusOK)
+				encoder := json.NewEncoder(writer)
+				encoder.SetIndent(empty, tab)
+				encoder.Encode(users)
+				fmt.Println("/list/users", http.StatusOK)
+			}
+		}
+	case request.Method=="POST" && request.URL.Path=="/user/delete/" :
+		{
+			user_email := make(map[string]string)
+
+			body, err := ioutil.ReadAll(io.LimitReader(request.Body, 1048576))
+
+			if err != nil {
+				fmt.Println("/delete/user", http.StatusBadRequest, err)
+			}
+			request.Body.Close()
+			if err := json.Unmarshal(body, &user_email); err != nil {
+				fmt.Println("/delete/user", http.StatusBadRequest, err)
+			}else{
+				user, err := models.UserByEmail(user_email["email"])
+				if err != nil {
+					writer.Header().Set("Content-Type", "application/json")
+					writer.WriteHeader(http.StatusBadRequest)
+					json.NewEncoder(writer).Encode("Couldn't find user")
+					fmt.Println("/delete/user", http.StatusBadRequest, err)
+				}else{
+					user.Delete()
+					writer.Header().Set("Content-Type", "application/json")
+					writer.WriteHeader(http.StatusOK)
+					fmt.Println("/delete/user", http.StatusOK)
+				}
+			}
+		}
+	// default:
+	// 	fmt.Println("okay")
+	}
+}
+
 // GET /logout
 // Logs the user out
 func logout(writer http.ResponseWriter, request *http.Request) {
@@ -107,54 +168,5 @@ func logout(writer http.ResponseWriter, request *http.Request) {
 		json.NewEncoder(writer).Encode("Failed to get cookie")
 		session := models.Session{Uuid: cookie.Value}
 		session.DeleteByUUID()
-	}
-}
-
-//GET /list/users
-
-
-func Userlist(writer http.ResponseWriter, request *http.Request) {
-	users,err:=models.Users()
-	if err != nil {
-		{
-			writer.Header().Set("Content-Type", "application/json")
-			writer.WriteHeader(http.StatusInternalServerError)
-			fmt.Println(http.StatusInternalServerError)
-			fmt.Println(err)
-		}
-	} else {
-		writer.Header().Set("Content-Type", "application/json")
-		writer.WriteHeader(http.StatusOK)
-		encoder := json.NewEncoder(writer)
-		encoder.SetIndent(empty, tab)
-		encoder.Encode(users)
-		fmt.Println("/list/users", http.StatusOK)
-	}
-}
-
-func UserDelete(writer http.ResponseWriter, request *http.Request) {
-	user_email := make(map[string]string)
-
-	body, err := ioutil.ReadAll(io.LimitReader(request.Body, 1048576))
-
-	if err != nil {
-		fmt.Println("/delete/user", http.StatusBadRequest, err)
-	}
-	request.Body.Close()
-	if err := json.Unmarshal(body, &user_email); err != nil {
-		fmt.Println("/delete/user", http.StatusBadRequest, err)
-	}else{
-		user, err := models.UserByEmail(user_email["email"])
-		if err != nil {
-			writer.Header().Set("Content-Type", "application/json")
-			writer.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(writer).Encode("Couldn't find user")
-			fmt.Println("/delete/user", http.StatusBadRequest, err)
-		}else{
-			user.Delete()
-			writer.Header().Set("Content-Type", "application/json")
-			writer.WriteHeader(http.StatusOK)
-			fmt.Println("/delete/user", http.StatusOK)
-		}
 	}
 }
