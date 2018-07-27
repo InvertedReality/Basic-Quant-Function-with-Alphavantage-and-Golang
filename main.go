@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"time"
 	"encoding/json"
+	// "fmt"
+	// "reflect"
 )
 
 func main() {
@@ -14,9 +16,9 @@ func main() {
 	mux.HandleFunc("/get/data/", getdata)
 	mux.HandleFunc("/get/meta/", GetMetaData)
 	mux.HandleFunc("/get/graph/", getgraph)
-	mux.HandleFunc("/logout/", logout)
-	mux.HandleFunc("/signup/", signupAccount)
-	mux.HandleFunc("/authenticate/", authenticate)
+	mux.HandleFunc("/user/logout/", authenticate)
+	mux.HandleFunc("/user/signup/",UserExec)
+	mux.HandleFunc("/user/auth/", authenticate)
 	mux.HandleFunc("/", Home)
 	mux.HandleFunc("/user/list/",UserExec)
 	mux.HandleFunc("/user/delete/",UserExec)
@@ -30,6 +32,7 @@ func main() {
 		MaxHeaderBytes: 1 << 20,
 	}
 	server.ListenAndServe()
+	return
 }
 
 //home
@@ -39,9 +42,9 @@ func Home(writer http.ResponseWriter, request *http.Request) {
 		1: "/get/data",
 		2: "/get/meta",
 		3: "/get/graph",
-		4: "/logout",
-		5: "/signup",
-		6: "/authenticate",
+		4: "/user/logout",
+		5: "/user/signup",
+		6: "/user/auth/",
 		7: "/user/list/",
 		8: "/user/delete/",
 	}
@@ -56,3 +59,4 @@ func Home(writer http.ResponseWriter, request *http.Request) {
 	}
 
 }
+

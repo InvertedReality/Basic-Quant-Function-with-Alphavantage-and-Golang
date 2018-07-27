@@ -10,42 +10,7 @@ import (
 	"time"
 )
 
-var errormessage string = "POST"
 var successmessage string = "User created successfully"
-
-// POST /signup
-//Create a new user
-func signupAccount(writer http.ResponseWriter, request *http.Request) {
-	user := models.User{}
-	body, err := ioutil.ReadAll(io.LimitReader(request.Body, 1048576))
-	if err != nil {
-		writer.Header().Set("Content-Type", "application/json")
-		writer.WriteHeader(http.StatusBadRequest)
-		fmt.Println("/signup", http.StatusBadRequest, err)
-		json.NewEncoder(writer).Encode("data limit exceeded")
-	}
-	request.Body.Close()
-	if err := json.Unmarshal(body, &user); err != nil {
-		writer.Header().Set("Content-Type", "application/json")
-		writer.WriteHeader(http.StatusBadRequest)
-		fmt.Println("/signup", http.StatusBadRequest, err)
-		json.NewEncoder(writer).Encode("Invalid json data")
-
-	}
-	if err := user.Create(); err != nil {
-		writer.Header().Set("Content-Type", "application/json")
-		writer.WriteHeader(http.StatusBadRequest)
-		fmt.Println("/signup", http.StatusBadRequest, err)
-		json.NewEncoder(writer).Encode("Couldn't create user")
-		// fmt.Println("/signup", err)
-	} else {
-		writer.Header().Set("Content-Type", "application/json")
-		writer.WriteHeader(http.StatusCreated)
-		json.NewEncoder(writer).Encode(successmessage)
-		fmt.Println("/signup", http.StatusCreated)
-	}
-}
-
 
 // GET /logout
 // Logs the user out
@@ -101,8 +66,8 @@ func authenticate(writer http.ResponseWriter, request *http.Request) {
 
 }
 
-
-//GET /list/users
+// POST /user/signup/
+//GET /user/list/
 //POST /user/delete/
 func UserExec(writer http.ResponseWriter, request *http.Request){
 
@@ -153,8 +118,37 @@ func UserExec(writer http.ResponseWriter, request *http.Request){
 				}
 			}
 		}
-	// default:
-	// 	fmt.Println("okay")
+	case request.Method=="POST" && request.URL.Path=="/user/signup/":
+		{
+			user := models.User{}
+			body, err := ioutil.ReadAll(io.LimitReader(request.Body, 1048576))
+			if err != nil {
+				writer.Header().Set("Content-Type", "application/json")
+				writer.WriteHeader(http.StatusBadRequest)
+				fmt.Println("/signup", http.StatusBadRequest, err)
+				json.NewEncoder(writer).Encode("data limit exceeded")
+			}
+			request.Body.Close()
+			if err := json.Unmarshal(body, &user); err != nil {
+				writer.Header().Set("Content-Type", "application/json")
+				writer.WriteHeader(http.StatusBadRequest)
+				fmt.Println("/signup", http.StatusBadRequest, err)
+				json.NewEncoder(writer).Encode("Invalid json data")
+
+			}
+			if err := user.Create(); err != nil {
+				writer.Header().Set("Content-Type", "application/json")
+				writer.WriteHeader(http.StatusBadRequest)
+				fmt.Println("/signup", http.StatusBadRequest, err)
+				json.NewEncoder(writer).Encode("Couldn't create user")
+				// fmt.Println("/signup", err)
+			} else {
+				writer.Header().Set("Content-Type", "application/json")
+				writer.WriteHeader(http.StatusCreated)
+				json.NewEncoder(writer).Encode(successmessage)
+				fmt.Println("/signup", http.StatusCreated)
+			}
+		}
 	}
 }
 
