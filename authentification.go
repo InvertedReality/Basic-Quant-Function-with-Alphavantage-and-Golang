@@ -10,6 +10,8 @@ import (
 	"time"
 	"strings"
 	"github.com/dgrijalva/jwt-go"
+    "github.com/gorilla/context"
+
 )
 
 var successmessage string = "User created successfully"
@@ -188,4 +190,39 @@ func ReturnCredentials(request *http.Request) (claims interface{}){
     }
 }
 return
+}
+
+func ValidationMiddleware(next http.HandlerFunc) http.HandlerFunc {
+    return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+        authorizationHeader := request.Header.Get("Authorization")
+        if authorizationHeader != "" {
+            bearerToken := strings.Split(authorizationHeader, " ")
+            if len(bearerToken) == 2 {
+                token, error := jwt.Parse(bearerToken[1], func(token *jwt.Token) (interface{}, error) {
+                    if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+                        fmt.Println("errors")
+                        return nil, fmt.Errorf("There was an error")
+                    }
+                    return []byte("secret"), nil
+                })
+                if error != nil {
+                    json.NewEncoder(writer).Encode(Exception{Message: error.Error()})
+                    return
+                }
+                if token.Valid {
+                    context.Set(request, "decoded", token.Claims)
+                    next(writer, request)
+                } else {
+                    json.NewEncoder(writer).Encode(Exception{Message: "Invalid authorization token"})
+                    writer.WriteHeader(http.StatusForbidden)
+                }
+            }else{
+                fmt.Println("Invalid Authorization token format")
+                writer.WriteHeader(http.StatusUnauthorized)
+            }
+        } else {
+            json.NewEncoder(writer).Encode(Exception{Message: "An authorization header is required"})
+            writer.WriteHeader(http.StatusUnauthorized)
+        }
+    })
 }
