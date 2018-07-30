@@ -79,14 +79,7 @@ func authenticate(writer http.ResponseWriter, request *http.Request) {
 		}
 	case request.Method=="GET" && request.URL.Path=="/user/logout/":
 		{
-			cookie, err := request.Cookie("_cookie")
-			if err != http.ErrNoCookie {
-				writer.Header().Set("Content-Type", "application/json")
-				writer.WriteHeader(400)
-				json.NewEncoder(writer).Encode("Failed to get cookie")
-				session := models.Session{Uuid: cookie.Value}
-				session.DeleteByUUID()
-			}
+			fmt.Println("to be implemented")
 		}
 	}
 }
