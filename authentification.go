@@ -8,6 +8,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"time"
+	// "strings"
+	"github.com/dgrijalva/jwt-go"
 )
 
 var successmessage string = "User created successfully"
@@ -37,26 +39,25 @@ func authenticate(writer http.ResponseWriter, request *http.Request) {
 				fmt.Println("/user/auth/", http.StatusBadRequest, err)
 			}
 			if user.Password == models.Encrypt(login_details["password"]) {
-				session, err := user.CreateSession()
 				if err != nil {
 					writer.Header().Set("Content-Type", "application/json")
 					writer.WriteHeader(http.StatusBadRequest)
 					fmt.Println("/user/auth/", http.StatusBadRequest, err)
 					json.NewEncoder(writer).Encode("Error creating session")
 				} else {
-					expiration := time.Now().Add(time.Hour)
-					cookie := http.Cookie{
-						Name:     "_cookie",
-						Value:    session.Uuid,
-						HttpOnly: true,
-						Expires:  expiration,
-						MaxAge:   3600,
-					}
-					http.SetCookie(writer, &cookie)
 					writer.Header().Set("Content-Type", "application/json")
 					writer.WriteHeader(http.StatusOK)
-					json.NewEncoder(writer).Encode(cookie)
 					fmt.Println("/user/auth/", http.StatusOK)
+					token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+			        "user": user,
+			        "exp":time.Now().Add(time.Hour * 2),
+
+			    })
+			    tokenString, error := token.SignedString([]byte("secret"))
+			    if error != nil {
+			        fmt.Println(error)
+			    }
+			    json.NewEncoder(writer).Encode(JwtToken{Token: tokenString})
 				}
 
 			} else {
@@ -84,7 +85,6 @@ func authenticate(writer http.ResponseWriter, request *http.Request) {
 //GET /user/list/
 //POST /user/delete/
 func UserExec(writer http.ResponseWriter, request *http.Request){
-
 	switch{
 	case request.Method=="GET" && request.URL.Path=="/user/list/" :
 		 {
