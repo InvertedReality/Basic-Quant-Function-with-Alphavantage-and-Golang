@@ -16,6 +16,13 @@ import (
 
 var successmessage string = "User created successfully"
 
+type JwtToken struct {
+    Token string `json:"token"`
+}
+
+type Exception struct {
+    Message string `json:"message"`
+}
 // GET  /userlogout
 // POST /user/auth/
 
