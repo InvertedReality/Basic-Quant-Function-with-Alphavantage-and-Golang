@@ -8,7 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"time"
-	// "strings"
+	"strings"
 	"github.com/dgrijalva/jwt-go"
 )
 
@@ -164,4 +164,28 @@ func UserExec(writer http.ResponseWriter, request *http.Request){
 			}
 		}
 	}
+}
+
+//Function for decoding token added
+func ReturnCredentials(request *http.Request) (claims interface{}){
+    authorizationHeader := request.Header.Get("Authorization")
+    if authorizationHeader != "" {
+    bearerToken := strings.Split(authorizationHeader, " ")
+    if len(bearerToken) == 2 {
+        token, _ := jwt.Parse(bearerToken[1], func(token *jwt.Token) (interface{}, error) {
+            if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+                return nil, fmt.Errorf("There was an error")
+            }
+            return []byte("secret"), nil
+        })
+        if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+        json.Marshal(claims)
+        } else {
+            fmt.Println("Invalid authorization token")
+        }
+    }else{
+        fmt.Println("Invalid Authorization token format")
+    }
+}
+return
 }
