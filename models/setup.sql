@@ -1,5 +1,5 @@
 drop table sessions;
-drop table users;
+-- drop table users;
 
 
 create table users (
