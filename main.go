@@ -4,29 +4,28 @@ import (
 	"net/http"
 	"time"
 	"encoding/json"
-	// "fmt"
-	// "reflect"
+    "github.com/gorilla/mux"
 )
+
 
 func main() {
 	p("Basic QUANT APP", version(), "started at Adress:", config.Address, "\n", time.Now())
-	mux := http.NewServeMux()
+	router := mux.NewRouter()
 
 	//The urls
-	mux.HandleFunc("/", Home)
-	mux.HandleFunc("/get/data/", getdata)
-	mux.HandleFunc("/get/meta/", GetMetaData)
-	mux.HandleFunc("/get/graph/", getgraph)
-	mux.HandleFunc("/user/logout/", authenticate)
-	mux.HandleFunc("/user/auth/", authenticate)
-	mux.HandleFunc("/user/signup/",UserExec)
-	mux.HandleFunc("/user/list/",UserExec)
-	mux.HandleFunc("/user/delete/",UserExec)
-
+	router.HandleFunc("/", Home)
+	router.HandleFunc("/get/data/", ValidationMiddleware(getdata))
+	router.HandleFunc("/get/meta/", ValidationMiddleware(GetMetaData))
+	router.HandleFunc("/get/graph/", ValidationMiddleware(getgraph))
+	router.HandleFunc("/user/logout/", ValidationMiddleware(authenticate)
+	router.HandleFunc("/user/auth/", authenticate)
+	router.HandleFunc("/user/signup/",ValidationMiddleware(UserExec))
+	router.HandleFunc("/user/list/",ValidationMiddleware(UserExec))
+	router.HandleFunc("/user/delete/",ValidationMiddleware(UserExec))
 	//Server details
 	server := &http.Server{
 		Addr:           config.Address,
-		Handler:        mux,
+		Handler:        router,
 		ReadTimeout:    time.Duration(config.ReadTimeout * int64(time.Second)),
 		WriteTimeout:   time.Duration(config.WriteTimeout * int64(time.Second)),
 		MaxHeaderBytes: 1 << 20,
@@ -47,6 +46,7 @@ func Home(writer http.ResponseWriter, request *http.Request) {
 		6: "/user/auth/",
 		7: "/user/list/",
 		8: "/user/delete/",
+		9: "/token/",
 	}
 
 	{
