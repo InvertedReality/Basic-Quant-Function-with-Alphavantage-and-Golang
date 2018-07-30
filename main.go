@@ -17,7 +17,7 @@ func main() {
 	router.HandleFunc("/get/data/", ValidationMiddleware(getdata))
 	router.HandleFunc("/get/meta/", ValidationMiddleware(GetMetaData))
 	router.HandleFunc("/get/graph/", ValidationMiddleware(getgraph))
-	router.HandleFunc("/user/logout/", ValidationMiddleware(authenticate)
+	router.HandleFunc("/user/logout/", ValidationMiddleware(authenticate))
 	router.HandleFunc("/user/auth/", authenticate)
 	router.HandleFunc("/user/signup/",ValidationMiddleware(UserExec))
 	router.HandleFunc("/user/list/",ValidationMiddleware(UserExec))
