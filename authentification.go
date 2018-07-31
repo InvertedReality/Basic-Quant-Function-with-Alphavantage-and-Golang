@@ -13,6 +13,7 @@ import (
     "github.com/gorilla/context"
 
 )
+var secretkey string = "AFSdfhfjgvhgvbbh4r576tit687t7t86tr6r69r"
 
 var successmessage string = "User created successfully"
 
@@ -62,7 +63,7 @@ func authenticate(writer http.ResponseWriter, request *http.Request) {
 			        "exp":time.Now().Add(time.Hour * 2),
 
 			    })
-			    tokenString, error := token.SignedString([]byte("secret"))
+			    tokenString, error := token.SignedString([]byte(secretkey))
 			    if error != nil {
 			        fmt.Println(error)
 			    }
@@ -178,18 +179,18 @@ func ReturnCredentials(request *http.Request) (claims interface{}){
             if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
                 return nil, fmt.Errorf("There was an error")
             }
-            return []byte("secret"), nil
+            return []byte(secretkey), nil
         })
         if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
         json.Marshal(claims)
         } else {
-            fmt.Println("Invalid authorization token")
+            fmt.Println("Invalid or Expired authorization token")
         }
     }else{
         fmt.Println("Invalid Authorization token format")
     }
 }
-return
+return claims
 }
 
 func ValidationMiddleware(next http.HandlerFunc) http.HandlerFunc {
@@ -203,7 +204,7 @@ func ValidationMiddleware(next http.HandlerFunc) http.HandlerFunc {
                         fmt.Println("errors")
                         return nil, fmt.Errorf("There was an error")
                     }
-                    return []byte("secret"), nil
+                    return []byte(secretkey), nil
                 })
                 if error != nil {
                     json.NewEncoder(writer).Encode(Exception{Message: error.Error()})

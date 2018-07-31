@@ -46,7 +46,7 @@ func Home(writer http.ResponseWriter, request *http.Request) {
 		6: "/user/auth/",
 		7: "/user/list/",
 		8: "/user/delete/",
-		9: "/token/",
+		9: "/user/auth/",
 	}
 
 	{
