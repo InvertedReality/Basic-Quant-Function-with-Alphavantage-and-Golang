@@ -90,7 +90,7 @@ func getdata(writer http.ResponseWriter, request *http.Request) {
 		encoder := json.NewEncoder(writer)
 		encoder.SetIndent(empty, tab)
 		encoder.Encode(slice)
-		fmt.Println("/get/data", http.StatusOK)
+		fmt.Println(request.URL.Path, http.StatusOK)
 	}
 }
 
@@ -122,7 +122,7 @@ func GetMetaData(writer http.ResponseWriter, request *http.Request) {
 		encoder := json.NewEncoder(writer)
 		encoder.SetIndent(empty, tab)
 		encoder.Encode(meta)
-		fmt.Println("/get/meta", http.StatusOK)
+		fmt.Println(request.URL.Path, http.StatusOK)
 	}
 }
 
@@ -316,7 +316,7 @@ func getgraph(writer http.ResponseWriter, request *http.Request) {
 			encoder := json.NewEncoder(writer)
 			encoder.SetIndent(empty, tab)
 			encoder.Encode(graph_data)
-			fmt.Println("/get/graph", http.StatusOK)
+			fmt.Println(request.URL.Path, http.StatusOK)
 		}
 	}
 
