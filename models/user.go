@@ -80,7 +80,7 @@ func Users() (users []User, err error) {
 func UserByEmail(email string) (user User, err error) {
 	user = User{}
 	err = Db.QueryRow("SELECT id, uuid, name, email, password, dateofbirth, created_at FROM users WHERE email = $1", email).
-		Scan(&user.Id, &user.Uuid, &user.Name, &user.Email, &user.Password, &user.Dateofbirth &user.CreatedAt)
+		Scan(&user.Id, &user.Uuid, &user.Name, &user.Email, &user.Password, &user.Dateofbirth, &user.CreatedAt)
 	return
 }
 
@@ -88,6 +88,6 @@ func UserByEmail(email string) (user User, err error) {
 func UserByUUID(uuid string) (user User, err error) {
 	user = User{}
 	err = Db.QueryRow("SELECT id, uuid, name, email, password, dateofbirth, created_at FROM users WHERE uuid = $1", uuid).
-		Scan(&user.Id, &user.Uuid, &user.Name, &user.Email, &user.Password, &user.Dateofbirth &user.CreatedAt)
+		Scan(&user.Id, &user.Uuid, &user.Name, &user.Email, &user.Password, &user.Dateofbirth, &user.CreatedAt)
 	return
 }
