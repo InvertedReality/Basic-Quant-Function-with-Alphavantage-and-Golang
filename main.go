@@ -21,7 +21,7 @@ func main() {
 	router.HandleFunc("/get/graph/", ValidationMiddleware(getgraph)).Name("get_graph")
 	router.HandleFunc("/user/logout/", ValidationMiddleware(authenticate)).Name("logout")
 	router.HandleFunc("/user/auth/", authenticate).Name("authenticate")
-	router.HandleFunc("/user/signup/",ValidationMiddleware(UserExec)).Name("signup")
+	router.HandleFunc("/user/signup/",UserExec).Name("signup")
 	router.HandleFunc("/user/list/",ValidationMiddleware(UserExec)).Name("user_list")
 	router.HandleFunc("/user/delete/",ValidationMiddleware(UserExec)).Name("user_delete")
     router.Walk(WalkFunc)

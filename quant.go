@@ -308,7 +308,7 @@ func getgraph(writer http.ResponseWriter, request *http.Request) {
 				std_dev_data = append(std_dev_data, dev_low)
 			}
 			//Appending the data
-			graph_data["standard_deviations"] = std_dev_data
+			graph_data["market_volatility"] = std_dev_data
 
 			//serving the data as json
 			writer.Header().Set("Content-Type", "application/json")
