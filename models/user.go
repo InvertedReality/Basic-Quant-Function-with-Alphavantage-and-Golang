@@ -11,6 +11,7 @@ type User struct {
 	Name      string
 	Email     string
 	Password  string
+	Dateofbirth string
 	CreatedAt time.Time
 }
 
@@ -19,7 +20,7 @@ func (user *User) Create() (err error) {
 	// Postgres does not automatically return the last insert id, because it would be wrong to assume
 	// you're always using a sequence.You need to use the RETURNING keyword in your insert to get this
 	// information from postgres.
-	statement := "insert into users (uuid, name, email, password, created_at) values ($1, $2, $3, $4, $5) returning id, uuid, created_at"
+	statement := "insert into users (uuid, name, email, password, dateofbirth, created_at) values ($1, $2, $3, $4, $5, $6) returning id, uuid, created_at"
 	stmt, err := Db.Prepare(statement)
 	if err != nil {
 		fmt.Println("Created")
@@ -60,13 +61,13 @@ func (user *User) Update() (err error) {
 
 // Get all users in the database and returns it
 func Users() (users []User, err error) {
-	rows, err := Db.Query("SELECT id, uuid, name, email, password, created_at FROM users")
+	rows, err := Db.Query("SELECT id, uuid, name, email, password, dateofbirth, created_at FROM users")
 	if err != nil {
 		return
 	}
 	for rows.Next() {
 		user := User{}
-		if err = rows.Scan(&user.Id, &user.Uuid, &user.Name, &user.Email, &user.Password, &user.CreatedAt); err != nil {
+		if err = rows.Scan(&user.Id, &user.Uuid, &user.Name, &user.Email, &user.Password, &user.Dateofbirth, &user.CreatedAt); err != nil {
 			return
 		}
 		users = append(users, user)
@@ -78,15 +79,15 @@ func Users() (users []User, err error) {
 // Get a single user given the email
 func UserByEmail(email string) (user User, err error) {
 	user = User{}
-	err = Db.QueryRow("SELECT id, uuid, name, email, password, created_at FROM users WHERE email = $1", email).
-		Scan(&user.Id, &user.Uuid, &user.Name, &user.Email, &user.Password, &user.CreatedAt)
+	err = Db.QueryRow("SELECT id, uuid, name, email, password, dateofbirth, created_at FROM users WHERE email = $1", email).
+		Scan(&user.Id, &user.Uuid, &user.Name, &user.Email, &user.Password, &user.Dateofbirth &user.CreatedAt)
 	return
 }
 
 // Get a single user given the UUID
 func UserByUUID(uuid string) (user User, err error) {
 	user = User{}
-	err = Db.QueryRow("SELECT id, uuid, name, email, password, created_at FROM users WHERE uuid = $1", uuid).
-		Scan(&user.Id, &user.Uuid, &user.Name, &user.Email, &user.Password, &user.CreatedAt)
+	err = Db.QueryRow("SELECT id, uuid, name, email, password, dateofbirth, created_at FROM users WHERE uuid = $1", uuid).
+		Scan(&user.Id, &user.Uuid, &user.Name, &user.Email, &user.Password, &user.Dateofbirth &user.CreatedAt)
 	return
 }
