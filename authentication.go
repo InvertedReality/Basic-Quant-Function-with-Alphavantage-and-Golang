@@ -153,6 +153,7 @@ func UserExec(writer http.ResponseWriter, request *http.Request){
 				json.NewEncoder(writer).Encode("Invalid json data")
 
 			}
+			fmt.Println(user)
 			if err := user.Create(); err != nil {
 				writer.Header().Set("Content-Type", "application/json")
 				writer.WriteHeader(http.StatusBadRequest)
