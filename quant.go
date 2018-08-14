@@ -239,7 +239,7 @@ func getgraph(writer http.ResponseWriter, request *http.Request) {
 			average_data["average_low"] = average(low_float)
 			average_data["average_high"] = average(high_float)
 			graph_data["averages"] = average_data
-			//Calculate the standard deviation a.k.a gradient
+			//Calculate the variance
 
 			//Step 1: Find the mean.
 			// Step 2: For each data point, find the square of its distance to the mean.
