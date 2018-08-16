@@ -4,7 +4,9 @@ import (
 	"net/http"
 	"time"
 	"encoding/json"
-    "github.com/gorilla/mux"
+	"github.com/gorilla/mux"
+	"github.com/gorilla/handlers"
+
 )
 
 var path_details []string
@@ -26,14 +28,11 @@ func main() {
 	router.HandleFunc("/user/delete/",ValidationMiddleware(UserExec)).Name("user_delete")
     router.Walk(WalkFunc)
 
-	server := &http.Server{
-		Addr:           config.Address,
-		Handler:        router,
-		ReadTimeout:    time.Duration(config.ReadTimeout * int64(time.Second)),
-		WriteTimeout:   time.Duration(config.WriteTimeout * int64(time.Second)),
-		MaxHeaderBytes: 1 << 20,
-	}
-	server.ListenAndServe()
+	http.ListenAndServe(config.Address,
+	handlers.CORS(handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}), 
+	handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS"}), 
+	handlers.AllowedOrigins([]string{"*"}))(router))
+
 	return
 }
 
