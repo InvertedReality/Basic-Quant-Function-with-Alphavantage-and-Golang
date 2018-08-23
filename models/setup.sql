@@ -1,4 +1,4 @@
-drop table users;
+-- drop table users;
 
 
 create table users (
@@ -9,4 +9,9 @@ create table users (
   password   varchar(255) not null,
   dateofbirth varchar(255) not null,
   created_at timestamp not null   
+);
+
+create table companies (
+  id         serial primary key,
+  name       varchar(255),
 );

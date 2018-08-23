@@ -26,6 +26,8 @@ func main() {
 	router.HandleFunc("/user/signup/",UserExec).Name("signup")
 	router.HandleFunc("/user/list/",ValidationMiddleware(UserExec)).Name("user_list")
 	router.HandleFunc("/user/delete/",ValidationMiddleware(UserExec)).Name("user_delete")
+	router.HandleFunc("/company/",Company).Name("company")
+	router.HandleFunc("/company/set/",Company).Name("company_set")
     router.Walk(WalkFunc)
 
 	http.ListenAndServe(config.Address,
